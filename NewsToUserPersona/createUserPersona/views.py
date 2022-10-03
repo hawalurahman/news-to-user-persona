@@ -121,13 +121,16 @@ def createUserPersona(group_of_sentences):
 def preprocessingWithSpacy(input):
     doc = nlp(input)
 
+    # menggunakan lemmatized form
+    lemmatized_words = " ".join([token.lemma_ for token in doc])
+    doc = nlp(lemmatized_words)
+
     # mencari pattern goals
     matcher = Matcher(nlp.vocab)
     pattern = [{'POS': 'VERB'},
             {'POS': 'ADJ'},
             {'POS': 'NOUN'}]
     matcher.add("HelloWorld", [pattern])
-
     
     filtered_goals = []
     matches = matcher(doc)

@@ -18,6 +18,9 @@
     <!-- place navbar here -->
   </header>
   <main>
+    <div class="container">
+      
+    
     {% if user_persona %}
     <ul>
       {% for each in user_persona %}
@@ -34,6 +37,7 @@
     {% else %}
       <p>No polls are available.</p>
     {% endif %}
+  </div>
     
   </main>
   <footer>
