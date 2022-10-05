@@ -9,6 +9,9 @@ nlp = spacy.load('en_core_web_sm')
 import numpy as np
 from spacy.matcher import Matcher
 from spacy.matcher import PhraseMatcher
+from collections import defaultdict
+
+import jobTitlesList
 
 import json
 
@@ -23,8 +26,13 @@ def letsGo(request):
     preprocessed_konten = preprocessingWithSpacy(konten)
     created_persona = createUserPersona(preprocessed_konten)
 
-    load_the_json = json.loads(created_persona)
-    send_to_render = {'user_persona': load_the_json}
+    sentences_with_entities = findingSentencesWithEntities(konten)
+    potential_entities = profilingEntities(sentences_with_entities)
+
+    created_persona_dict = json.loads(created_persona)
+    potential_entities_dict = json.loads(potential_entities)
+
+    send_to_render = {'user_persona': created_persona_dict, 'potential_user_persona': potential_entities_dict}
 
 
     
@@ -114,7 +122,6 @@ def createUserPersona(group_of_sentences):
     print("===========================")
     json_hasil = json.dumps(userPersonaCreated)
 
-
     return json_hasil
 
 # preprocessing dengan spacy
@@ -158,6 +165,91 @@ def preprocessingWithSpacy(input):
         a=a+1
     
     return filtered_sentences_containing_goals
+
+# mencari kalimat yang ber entitas
+def findingSentencesWithEntities(input):
+    doc = nlp(input)
+
+    who_aspect = []
+    for ent in doc.ents:
+        if ent.label_ == "PERSON" or ent.label_ == "ORG":
+            who_aspect.append(ent.text)
+
+    who_aspect = np.unique(who_aspect)
+
+    matcher = PhraseMatcher(nlp.vocab)
+    terms = str(who_aspect)
+
+    # Only run nlp.make_doc to speed things up
+    patterns = [nlp.make_doc(text) for text in terms]
+    matcher.add("TerminologyList", patterns)
+
+    filtered_sentences = []
+    for sent in doc.sents:
+        for match_id, start, end in matcher(nlp(sent.text)):
+            if nlp.vocab.strings[match_id] in ["TerminologyList"]:
+                filtered_sentences.append(sent.text)
+
+    filtered_sentences = np.unique(filtered_sentences)
+
+    return filtered_sentences
+
+# profiling entitas
+def profilingEntities(sentences):
+    list_of_user_persona = []
+    list_of_names = []
+    
+    for each in sentences:
+        go = nlp((str(each)))
+        token_types = [token.ent_type_ for token in go]
+
+        if('PERSON' in token_types) or ('ORG' in token_types):
+
+            # mencari nama
+            for ent in go.ents:
+                if ent.label_ == "PERSON":
+                    nama = ent.text
+                    print('Person:' + ent.text)
+                    break
+                if ent.label_ == "ORG":
+                    nama = ent.text
+                    print('Organization:' + ent.text)
+                    break     
+            
+            # mencari organisasi
+            if('PERSON' in token_types) and ('ORG' in token_types):
+                for ent in go.ents:
+                    if ent.label_== "ORG":
+                        kerja = ent.text
+                        print('Work:' + ent.text)
+                    
+            else:
+                kerja = ""
+                print('Work: N/A')
+            print()
+
+            baru = UserPersona(nama, kerja, [])
+            list_of_user_persona.append(baru.__dict__)
+        
+        res_list = []
+        for i in range(len(list_of_user_persona)):
+            if list_of_user_persona[i] not in list_of_user_persona[i + 1:]:
+                res_list.append(list_of_user_persona[i])
+
+        json_hasil = json.dumps(res_list)
+
+    return json_hasil
+
+def merge_dict(d1, d2):
+    dd = defaultdict(list)
+
+    for d in (d1, d2):
+        for key, value in d.items():
+            if isinstance(value, list):
+                dd[key].extend(value)
+            else:
+                dd[key].append(value)
+    return dict(dd)
 
 # kelas untuk object userpersona
 class UserPersona:

@@ -14,31 +14,72 @@
 </head>
 
 <body>
-  <header>
-    <!-- place navbar here -->
-  </header>
   <main>
     <div class="container">
-      
-    
-    {% if user_persona %}
-    <ul>
-      {% for each in user_persona %}
-      <div class="container_untuk_drag shadow p-5 m-3">
-        <p class="fw-bold">{{ each.name }}</p>
-        {% for goal in each.goals %}
-        <p class="draggable p-2 shadow-sm rounded-2 my-2" draggable="true">
-          {{ goal }}
-        </p>
-        {% endfor %}
+      <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+          <svg class="bi me-2" width="40" height="32">
+            <use xlink:href="#bootstrap" />
+          </svg>
+          <span class="fs-4">News To User Persona</span>
+        </a>
+
+        <ul class="nav nav-pills">
+          <li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Home</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">Features</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">Pricing</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">FAQs</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">About</a></li>
+        </ul>
+      </header>
+    </div>
+
+
+    <div class="container-fluid bg-light">
+      <div class="row align-items-center">
+        <div class="col">
+          {% if user_persona %}
+          <ul>
+            {% for each in user_persona %}
+            <div class="container_untuk_drag shadow bg-white p-5 m-3">
+              <p class="fw-bold">{{ each.name }}</p>
+              <p>{{ each.work }}</p>
+              {% for goal in each.goals %}
+              <p class="draggable p-2 shadow-sm rounded-2 my-2" draggable="true">{{ goal }}</p>
+              {% endfor %}
+            </div>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p>No polls are available.</p>
+          {% endif %}
+        </div>
+        <div class="col">
+          {% if potential_user_persona %}
+          <p>Potential user persona</p>
+          <ul>
+            {% for each in potential_user_persona %}
+            <div class="container_untuk_drag shadow bg-white p-5 m-3">
+              <p class="fw-bold">{{ each.name }}</p>
+              <p>{{ each.work }}</p>
+              {% for goal in each.goals %}
+              <p class="draggable p-2 shadow-sm rounded-2 my-2" draggable="true">{{ goal }}</p>
+              {% endfor %}
+            </div>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p>No polls are available.</p>
+          {% endif %}
+
+        </div>
       </div>
-      {% endfor %}
-    </ul>
-    {% else %}
-      <p>No polls are available.</p>
-    {% endif %}
-  </div>
-    
+
+
+
+
+    </div>
+
   </main>
   <footer>
     <!-- place footer here -->
@@ -80,11 +121,11 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
     integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous">
-  </script>
+    </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"
     integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK" crossorigin="anonymous">
-  </script>
+    </script>
 </body>
 
 </html>
