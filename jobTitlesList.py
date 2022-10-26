@@ -1,4 +1,7 @@
-job_titles = ["Marketing Specialist", "Marketing Manager", "Marketing Director",
+job_titles = ["Marketing Specialist",
+"Vice President",
+"Marketing Manager",
+"Marketing Director",
 "Graphic Designer",
 "Marketing Research Analyst",
 "Marketing Communications Manager",

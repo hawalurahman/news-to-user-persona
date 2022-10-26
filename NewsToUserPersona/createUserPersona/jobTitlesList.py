@@ -1,4 +1,5 @@
 job_titles = ["Marketing Specialist",
+"Vice President",
 "Marketing Manager",
 "Marketing Director",
 "Graphic Designer",

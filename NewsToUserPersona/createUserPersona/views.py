@@ -11,7 +11,7 @@ from spacy.matcher import Matcher
 from spacy.matcher import PhraseMatcher
 from collections import defaultdict
 
-import jobTitlesList
+from createUserPersona.jobTitlesList import job_titles
 
 import json
 
@@ -32,7 +32,11 @@ def letsGo(request):
     created_persona_dict = json.loads(created_persona)
     potential_entities_dict = json.loads(potential_entities)
 
-    send_to_render = {'user_persona': created_persona_dict, 'potential_user_persona': potential_entities_dict}
+    combined_user_persona = created_persona_dict + potential_entities_dict
+    combined_user_persona = MergeAndSort(combined_user_persona)
+
+
+    send_to_render = {'user_persona': combined_user_persona}
 
 
     
@@ -88,6 +92,19 @@ def createUserPersona(group_of_sentences):
                 print('Work: N/A')
             print()
 
+            # mencari job title
+            job_matcher = PhraseMatcher(nlp.vocab)
+            jabatan = job_titles
+
+            patterns_job = [nlp.make_doc(text) for text in jabatan]
+            job_matcher.add("TerminologyList", patterns_job)
+
+            nama_jabatan = ""
+            job_titles_found = job_matcher(go)
+            for match_id, start, end in job_titles_found:
+                nama_jabatan = go[start:end]
+                print(go[start:end])
+
             goals_found = []
             for match_id, start, end in matches3:
                 string_id = nlp.vocab.strings[match_id]  # Get string representation
@@ -97,8 +114,9 @@ def createUserPersona(group_of_sentences):
                 nomor_goals = nomor_goals+1   
             print("===========================")
 
-            ketemu = UserPersona(nama, kerja, goals_found)
+            ketemu = UserPersona(nama, kerja, str(nama_jabatan), goals_found)
             userPersonaCreated.append(ketemu.__dict__)
+
         else:
             for match_id, start, end in matches3:
                 string_id = nlp.vocab.strings[match_id]  # Get string representation
@@ -116,8 +134,10 @@ def createUserPersona(group_of_sentences):
     for each in no_entities:
         print(nomor_no_entities, each)
         nomor_no_entities = nomor_no_entities+1
-    ketemu = UserPersona('User', 'N/A', no_entities)
+    ketemu = UserPersona('User', 'N/A', 'N/A', no_entities)
     userPersonaCreated.append(ketemu.__dict__)
+
+    
     
     print("===========================")
     json_hasil = json.dumps(userPersonaCreated)
@@ -228,7 +248,20 @@ def profilingEntities(sentences):
                 print('Work: N/A')
             print()
 
-            baru = UserPersona(nama, kerja, [])
+            # mencari job title
+            job_matcher = PhraseMatcher(nlp.vocab)
+            jabatan = job_titles
+
+            patterns_job = [nlp.make_doc(text) for text in jabatan]
+            job_matcher.add("TerminologyList", patterns_job)
+
+            nama_jabatan = ""
+            job_titles_found = job_matcher(go)
+            for match_id, start, end in job_titles_found:
+                nama_jabatan = go[start:end]
+                print(go[start:end])
+
+            baru = UserPersona(nama, kerja, str(nama_jabatan), [])
             list_of_user_persona.append(baru.__dict__)
         
         res_list = []
@@ -253,7 +286,27 @@ def merge_dict(d1, d2):
 
 # kelas untuk object userpersona
 class UserPersona:
-    def __init__(self, name, work="", goals=[]):
+    def __init__(self, name, work="", job_title="", goals=[]):
         self.name = name
         self.work = work
         self.goals = goals
+        self.job_title = job_title
+
+# function untuk menggabungkan dictionary dan mensortir persona
+def MergeAndSort(baca_json):
+    from operator import itemgetter
+    baca_json = sorted(baca_json, key=itemgetter('name', 'goals')) 
+
+    unique_things = []
+    for i in range(len(baca_json)):
+        if(i == len(baca_json)-1):
+            print(baca_json[i])
+            unique_things.append(baca_json[i])
+        else:
+            if(baca_json[i]['name'] != baca_json[i+1]['name']):
+                print(baca_json[i])
+                unique_things.append(baca_json[i])
+
+    unique_things = sorted(unique_things, key=itemgetter('goals'))
+
+    return unique_things

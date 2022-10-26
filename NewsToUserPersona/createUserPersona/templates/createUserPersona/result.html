@@ -36,41 +36,75 @@
 
 
     <div class="container-fluid bg-light">
-      <div class="row align-items-center">
-        <div class="col">
+      <div class="row justify-content-center">
+        <div class="col-3">
           {% if user_persona %}
-          <ul>
-            {% for each in user_persona %}
-            <div class="container_untuk_drag shadow bg-white p-5 m-3">
-              <p class="fw-bold">{{ each.name }}</p>
-              <p>{{ each.work }}</p>
-              {% for goal in each.goals %}
-              <p class="draggable p-2 shadow-sm rounded-2 my-2" draggable="true">{{ goal }}</p>
-              {% endfor %}
+          {% for each in user_persona %}
+          <div class="container_untuk_drag shadow-sm bg-white my-3 pb-3" id="container_user_persona_{{ each.name }}">
+
+            <div class="d-flex flex-row border-bottom my-2">
+              <div class="p-3 me-2" id="penanda_warna"></div>
+              <div class="fw-bold fs-5 draggable" draggable="true">{{ each.name }}</div>
+              <button type="button" class="btn-close ms-auto align-self-center" aria-label="Close"
+                onclick="document.getElementById('container_user_persona_{{ each.name }}').remove()"></button>
+            </div>
+
+            <div class="d-flex flex-row mb-1 px-2">
+              <div class="p-1 text-secondary">Job Title</div>
+              <div class="p-1 border flex-fill draggable" draggable="true">{{ each.job_title }}</div>
+            </div>
+
+            <div class="d-flex flex-row mb-1 px-2">
+              <div class="p-1 text-secondary">Organization/Work</div>
+              <div class="p-1 border flex-fill draggable" draggable="true">{{ each.work }}</div>
+            </div>
+
+            {% for goal in each.goals %}
+            <div class="d-flex flex-row mb-1 mx-2 ps-2 draggable border" draggable="true">
+              <div class="p-1 flex-fill">{{ goal }}</div>
+              <div class="p-2" id="penanda_warna"></div>
             </div>
             {% endfor %}
-          </ul>
+
+          </div>
+          {% endfor %}
           {% else %}
           <p>No polls are available.</p>
           {% endif %}
         </div>
-        <div class="col">
-          {% if potential_user_persona %}
-          <p>Potential user persona</p>
-          <ul>
-            {% for each in potential_user_persona %}
-            <div class="container_untuk_drag shadow bg-white p-5 m-3">
-              <p class="fw-bold">{{ each.name }}</p>
-              <p>{{ each.work }}</p>
-              {% for goal in each.goals %}
-              <p class="draggable p-2 shadow-sm rounded-2 my-2" draggable="true">{{ goal }}</p>
-              {% endfor %}
+
+        <!-- untuk editingnya -->
+
+        <div class="col-3">
+          <div class=" col-3 shadow-sm bg-white my-3 pb-3 position-fixed">
+
+            <div class="d-flex flex-row border-bottom mb-2 ">
+              <div class="p-3 me-2" id="penanda_warna"></div>
+              <div class="col container_untuk_drag">
+                <div class="fw-bold fs-5 text-secondary" id="delete_after_drop">User Persona Name</div>
+              </div>
             </div>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p>No polls are available.</p>
-          {% endif %}
+
+            <div class="d-flex flex-row mb-1 px-2">
+              <div class="p-1 text-secondary">Job Title</div>
+              <div class="p-1 border flex-fill container_untuk_drag"></div>
+            </div>
+
+            <div class="d-flex flex-row mb-1 px-2">
+              <div class="p-1 text-secondary">Organization/Work</div>
+              <div class="p-1 border flex-fill container_untuk_drag"></div>
+            </div>
+
+
+            <div class="d-flex flex-row mb-1 border-top">
+              <div class="col container_untuk_drag h-50 pb-5">
+                <div class="text-center text-secondary pt-3" id="delete_after_drop">drag goals item here</div>
+              </div>
+            </div>
+
+
+          </div>
+
 
         </div>
       </div>
@@ -91,6 +125,7 @@
     const draggables = document.querySelectorAll('.draggable')
     const containers = document.querySelectorAll('.container_untuk_drag')
 
+
     draggables.forEach(draggable => {
       draggable.addEventListener('dragstart', () => {
         console.log('drag mulai')
@@ -100,6 +135,10 @@
       draggable.addEventListener('dragend', () => {
         console.log('drag selesai')
         draggable.classList.remove('dragging')
+      })
+
+      draggable.addEventListener('dblclick', () => {
+        draggable.remove()
       })
 
 
@@ -112,11 +151,36 @@
         console.log('lagi ada yang didrag')
 
         const draggable = document.querySelector('.dragging')
-        container.appendChild(draggable)
-      })
+        const draggable_clone = draggable.cloneNode(true)
 
+        if (container.querySelector('#delete_after_drop')) {
+          container.querySelector('#delete_after_drop').classList.add('visually-hidden')
+        }
+
+        container.appendChild(draggable)
+      }) 
 
     })
+
+    containers.forEach(container => {
+      const warna = randomHexColor();
+      console.log(container)
+      const item_goal = container.querySelectorAll('#penanda_warna')
+      for (i = 0; i < item_goal.length; i++) {
+        item_goal[i].style.backgroundColor = warna;
+      }
+    })
+
+
+
+
+    function randomHexColor() {
+      let hexCode = '#' + Math.random().toString(16).substring(2, 8);
+
+      return hexCode
+    }
+
+
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
