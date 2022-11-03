@@ -33,7 +33,9 @@ def letsGo(request):
     potential_entities_dict = json.loads(potential_entities)
 
     combined_user_persona = created_persona_dict + potential_entities_dict
+    print(combined_user_persona)
     combined_user_persona = MergeAndSort(combined_user_persona)
+    
 
 
     send_to_render = {'user_persona': combined_user_persona}
@@ -294,19 +296,48 @@ class UserPersona:
 
 # function untuk menggabungkan dictionary dan mensortir persona
 def MergeAndSort(baca_json):
+    name_sementara = []
+    for each in baca_json:
+        name_sementara.append(each['name'])
+
+    name_sementara = np.unique(name_sementara)
+
     from operator import itemgetter
-    baca_json = sorted(baca_json, key=itemgetter('name', 'goals')) 
+    baca_json = sorted(baca_json, key=itemgetter('name')) 
 
-    unique_things = []
-    for i in range(len(baca_json)):
-        if(i == len(baca_json)-1):
-            print(baca_json[i])
-            unique_things.append(baca_json[i])
-        else:
-            if(baca_json[i]['name'] != baca_json[i+1]['name']):
-                print(baca_json[i])
-                unique_things.append(baca_json[i])
+    temp = []
+    temp_nama = None
+    temp_kerja = None
+    temp_organisasi = None
 
-    unique_things = sorted(unique_things, key=itemgetter('goals'))
+    Sorted_Filtered_Persona = []
 
-    return unique_things
+    for nama in name_sementara:
+        for each in baca_json:
+            if each['name'] == nama:
+                if each['goals']:
+                    temp.extend(each['goals'])
+
+                if each['job_title']:
+                    temp_kerja = each['job_title']
+
+                if each['work']:
+                    temp_organisasi = each['work']
+
+                temp_nama = nama
+                
+            else:
+                if len(temp) > 1:
+                    print("hi")
+
+                if temp_nama:
+                    Sorted_Filtered_Persona.append(UserPersona(temp_nama, temp_organisasi, temp_kerja, temp).__dict__)
+                    print(temp_nama, temp_kerja, temp_organisasi, temp)
+                    
+                temp = []
+                temp_nama = None 
+                temp_kerja = None
+                temp_organisasi = None
+
+
+    return Sorted_Filtered_Persona
