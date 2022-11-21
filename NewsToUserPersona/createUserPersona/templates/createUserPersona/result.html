@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <title>Title</title>
+  <title>User Persona Generated</title>
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -17,7 +17,7 @@
   <main>
     <div class="container">
       <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+        <a href="/createUserPersona" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
           <svg class="bi me-2" width="40" height="32">
             <use xlink:href="#bootstrap" />
           </svg>
@@ -25,44 +25,105 @@
         </a>
 
         <ul class="nav nav-pills">
-          <li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Home</a></li>
+          <!-- <li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Home</a></li>
           <li class="nav-item"><a href="#" class="nav-link">Features</a></li>
           <li class="nav-item"><a href="#" class="nav-link">Pricing</a></li>
           <li class="nav-item"><a href="#" class="nav-link">FAQs</a></li>
-          <li class="nav-item"><a href="#" class="nav-link">About</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">About</a></li> -->
         </ul>
       </header>
     </div>
 
 
-    <div class="container bg-light">
+    <div class="container-fluid bg-secondary">
       <div class="row justify-content-center">
-        <div class="col-6">
+
+        <!-- semua item yang dideteksi -->
+        <div class="col-3">
+          <div class="container bg-light shadow-sm mt-3 px-4 py-1 rounded-3">
+            {% if user_persona %}
+
+            <div class="my-3">
+              <h4 class="py-1 border-bottom">Names</h4>
+              {% for each in user_persona %}
+              <div class="mb-1 ps-2 p-1 draggable border  draggable bg-white" draggable="true">{{ each.name }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="my-3">
+              <h4 class="py-1 border-bottom">Job Titles</h4>
+              {% for each in user_persona %}
+              {% if each.job_title and each.job_title != 'N/A' %}
+              <div class="mb-1 ps-2 p-1 draggable border  draggable bg-white" draggable="true">{{ each.job_title }}</div>
+              {% endif %}
+              {% endfor %}
+            </div>
+
+
+            <div class="my-3">
+              <h4 class="py-1 border-bottom">Organizations</h4>
+              {% for each in user_persona %}
+              {% if each.work and each.work != 'N/A' %}
+              <div class="mb-1 ps-2 p-1 draggable border  draggable bg-white" draggable="true">{{ each.work }}</div>
+              {% endif %}
+              {% endfor %}
+            </div>
+
+            <div class="my-3">
+              <h4 class="py-1 border-bottom">Goals</h4>
+              {% for each in user_persona %}
+              {% if each.goals %}
+              {% for goal in each.goals %}
+              <div class="mb-1 ps-2 p-1 draggable border  draggable bg-white" draggable="true">{{ goal }}</div>
+              {% endfor %}
+              {% endif %}
+              {% endfor %}
+            </div>
+
+
+            {% endif %}
+          </div>
+        </div>
+        <!-- semua item yang dideteksi -->
+
+        <!-- item yang dideteksi dan relasinya -->
+        <div class="col-3">
           {% if user_persona %}
           {% for each in user_persona %}
-          <div class="container_untuk_drag shadow-sm bg-white my-3 pb-3" id="container_user_persona_{{ each.name }}">
+          <div class="container_untuk_drag shadow-sm bg-white my-3 pb-3 rounded-3"
+            id="container_user_persona_{{ each.name }}">
 
-            <div class="d-flex flex-row border-bottom my-2">
-              <div class="p-3 me-2" id="penanda_warna"></div>
+            <div class="p-1 rounded-top" id="penanda_warna"> </div>
+            <div class="d-flex flex-row border-bottom p-2 mb-2">
+              <!-- <div class="badge me-2 rounded-circle" id="penanda_warna"></div> -->
               <div class="fw-bold fs-5 draggable" draggable="true">{{ each.name }}</div>
-              <button type="button" class="btn-close ms-auto align-self-center" aria-label="Close"
+              <button type="button" class="btn-close-white ms-auto align-self-center btn-sm" aria-label="Close"
                 onclick="document.getElementById('container_user_persona_{{ each.name }}').remove()"></button>
             </div>
 
             <div class="d-flex flex-row mb-1 px-2">
               <div class="p-1 text-secondary">Job Title</div>
+              {% if each.job_title %}
               <div class="p-1 border flex-fill draggable" draggable="true">{{ each.job_title }}</div>
+              {% else %}
+              <div class="p-1 border flex-fill draggable bg-light" draggable="true"></div>
+              {% endif %}
             </div>
+
 
             <div class="d-flex flex-row mb-1 px-2">
               <div class="p-1 text-secondary">Organization/Work</div>
+              {% if each.work %}
               <div class="p-1 border flex-fill draggable" draggable="true">{{ each.work }}</div>
+              {% else %}
+              <div class="p-1 border flex-fill draggable bg-light" draggable="true"></div>
+              {% endif %}
             </div>
 
             {% for goal in each.goals %}
             <div class="d-flex flex-row mb-1 mx-2 ps-2 draggable border" draggable="true">
               <div class="p-1 flex-fill">{{ goal }}</div>
-              <div class="p-2" id="penanda_warna"></div>
+              <div class="p-1" id="penanda_warna"></div>
             </div>
             {% endfor %}
 
@@ -75,7 +136,7 @@
 
         <!-- untuk editingnya -->
 
-        <div class="col-6">
+        <div class="col-4">
           <div class="col-4 shadow-sm bg-white my-3 pb-3 position-fixed">
 
             <div class="d-flex flex-row border-bottom mb-2 ">
@@ -102,11 +163,11 @@
               </div>
             </div>
 
-
           </div>
-
-
         </div>
+        <!-- untuk editingnya -->
+
+
       </div>
 
 
@@ -158,7 +219,7 @@
         }
 
         container.appendChild(draggable)
-      }) 
+      })
 
     })
 

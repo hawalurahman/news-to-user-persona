@@ -344,9 +344,9 @@ def MergeAndSort(baca_json):
                     print(temp_nama, temp_kerja, temp_organisasi, temp)
                     
                 temp = []
-                temp_nama = None 
-                temp_kerja = None
-                temp_organisasi = None
+                temp_nama = [] 
+                temp_kerja = []
+                temp_organisasi = []
 
 
     return Sorted_Filtered_Persona
