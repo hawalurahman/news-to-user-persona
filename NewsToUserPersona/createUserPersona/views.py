@@ -29,12 +29,17 @@ def letsGo(request):
     sentences_with_entities = findingSentencesWithEntities(konten)
     potential_entities = profilingEntities(sentences_with_entities)
 
+    
+
     created_persona_dict = json.loads(created_persona)
     potential_entities_dict = json.loads(potential_entities)
+
+    print(potential_entities)
 
     combined_user_persona = created_persona_dict + potential_entities_dict
     print(combined_user_persona)
     combined_user_persona = MergeAndSort(combined_user_persona)
+    print(combined_user_persona)
     
 
 
@@ -199,8 +204,10 @@ def findingSentencesWithEntities(input):
 
     who_aspect = np.unique(who_aspect)
 
+    print(who_aspect)
+
     matcher = PhraseMatcher(nlp.vocab)
-    terms = str(who_aspect)
+    terms = who_aspect.tolist()
 
     # Only run nlp.make_doc to speed things up
     patterns = [nlp.make_doc(text) for text in terms]
@@ -213,6 +220,8 @@ def findingSentencesWithEntities(input):
                 filtered_sentences.append(sent.text)
 
     filtered_sentences = np.unique(filtered_sentences)
+
+    print(filtered_sentences)
 
     return filtered_sentences
 
@@ -236,7 +245,7 @@ def profilingEntities(sentences):
                 if ent.label_ == "ORG":
                     nama = ent.text
                     print('Organization:' + ent.text)
-                    break     
+                    pass     
             
             # mencari organisasi
             if('PERSON' in token_types) and ('ORG' in token_types):
@@ -270,7 +279,7 @@ def profilingEntities(sentences):
         for i in range(len(list_of_user_persona)):
             if list_of_user_persona[i] not in list_of_user_persona[i + 1:]:
                 res_list.append(list_of_user_persona[i])
-
+        print('res list', res_list)
         json_hasil = json.dumps(res_list)
 
     return json_hasil
@@ -303,7 +312,7 @@ def MergeAndSort(baca_json):
     name_sementara = np.unique(name_sementara)
 
     from operator import itemgetter
-    baca_json = sorted(baca_json, key=itemgetter('name')) 
+    baca_json = sorted(baca_json, key=itemgetter('name', 'goals'), reverse=True) 
 
     temp = []
     temp_nama = None
