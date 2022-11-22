@@ -15,67 +15,90 @@
 
 <body>
   <main>
-    <div class="container">
-      <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-        <a href="/createUserPersona" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+    <div class="container-fluid sticky-top bg-white shadow">
+      <header class="d-flex flex-wrap flex-row justify-content-center py-3 border-bottom">
+        <a href="/createUserPersona"
+          class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
           <svg class="bi me-2" width="40" height="32">
             <use xlink:href="#bootstrap" />
           </svg>
           <span class="fs-4">News To User Persona</span>
         </a>
 
-        <ul class="nav nav-pills">
-          <!-- <li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Home</a></li>
+        <!-- <ul class="nav nav-pills">
+          <li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Home</a></li>
           <li class="nav-item"><a href="#" class="nav-link">Features</a></li>
           <li class="nav-item"><a href="#" class="nav-link">Pricing</a></li>
           <li class="nav-item"><a href="#" class="nav-link">FAQs</a></li>
-          <li class="nav-item"><a href="#" class="nav-link">About</a></li> -->
-        </ul>
+          <li class="nav-item"><a href="#" class="nav-link">About</a></li>
+        </ul> -->
       </header>
     </div>
 
 
     <div class="container-fluid bg-secondary">
-      <div class="row justify-content-center">
+      <div class="row justify-content-center mb-5 pb-5">
 
         <!-- semua item yang dideteksi -->
         <div class="col-3">
           <div class="container bg-light shadow-sm mt-3 px-4 py-1 rounded-3">
-            {% if user_persona %}
+            {% if individual_item %}
 
             <div class="my-3">
-              <h4 class="py-1 border-bottom">Names</h4>
-              {% for each in user_persona %}
-              <div class="mb-1 ps-2 p-1 draggable border  draggable bg-white" draggable="true">{{ each.name }}</div>
+              <h4 class="py-1 border-bottom">Names
+                <span class="badge bg-primary">{{individual_item.jumlah_nama}}</span>
+              </h4>
+              {% for each in individual_item.names %}
+              <div class="d-flex flex-row">
+                <div class="p-1 col-1 me-1 text-end text-secondary">{{ forloop.counter }}</div>
+                <div class="flex-fill mb-1 ps-2 p-1 draggable border bg-white" draggable="true">{{ each }}</div>
+              </div>
+              <!-- <div class="mb-1 ps-2 p-1 draggable border bg-white" draggable="true">{{ each }}</div> -->
               {% endfor %}
             </div>
 
             <div class="my-3">
-              <h4 class="py-1 border-bottom">Job Titles</h4>
-              {% for each in user_persona %}
-              {% if each.job_title and each.job_title != 'N/A' %}
-              <div class="mb-1 ps-2 p-1 draggable border  draggable bg-white" draggable="true">{{ each.job_title }}</div>
+              <h4 class="py-1 border-bottom">Job Titles
+                <span class="badge bg-primary">{{ individual_item.jumlah_job }}</span>
+              </h4>
+              {% for each in individual_item.jobs %}
+              {% if each and each != 'N/A' and each != '[]' %}
+              <div class="d-flex flex-row">
+                <div class="p-1 col-1 me-1 text-end text-secondary">{{ forloop.counter }}</div>
+                <div class="flex-fill mb-1 ps-2 p-1 draggable border bg-white" draggable="true">{{ each }}</div>
+              </div>
+              <!-- <div class="mb-1 ps-2 p-1 draggable border  draggable bg-white" draggable="true">{{ each }}</div> -->
               {% endif %}
               {% endfor %}
             </div>
 
 
             <div class="my-3">
-              <h4 class="py-1 border-bottom">Organizations</h4>
-              {% for each in user_persona %}
-              {% if each.work and each.work != 'N/A' %}
-              <div class="mb-1 ps-2 p-1 draggable border  draggable bg-white" draggable="true">{{ each.work }}</div>
+              <h4 class="py-1 border-bottom">Organizations
+                <span class="badge bg-primary">{{ individual_item.jumlah_work }}</span>
+              </h4>
+              {% for each in individual_item.works %}
+              {% if each and each != 'N/A' and each != '[]' %}
+              <div class="d-flex flex-row">
+                <div class="p-1 col-1 me-1 text-end text-secondary">{{ forloop.counter }}</div>
+                <div class="flex-fill mb-1 ps-2 p-1 draggable border bg-white" draggable="true">{{ each }}</div>
+              </div>
+              <!-- <div class="mb-1 ps-2 p-1 draggable border  draggable bg-white" draggable="true">{{ each }}</div> -->
               {% endif %}
               {% endfor %}
             </div>
 
             <div class="my-3">
-              <h4 class="py-1 border-bottom">Goals</h4>
-              {% for each in user_persona %}
-              {% if each.goals %}
-              {% for goal in each.goals %}
-              <div class="mb-1 ps-2 p-1 draggable border  draggable bg-white" draggable="true">{{ goal }}</div>
-              {% endfor %}
+              <h4 class="py-1 border-bottom">Goals
+                <span class="badge bg-primary">{{ individual_item.jumlah_goals }}</span>
+              </h4>
+              {% for each in individual_item.goals %}
+              {% if each and each != 'N/A' and each != '[]' %}
+              <div class="d-flex flex-row">
+                <div class="p-1 col-1 me-1 text-end text-secondary">{{ forloop.counter }}</div>
+                <div class="flex-fill mb-1 ps-2 p-1 draggable border bg-white" draggable="true">{{ each }}</div>
+              </div>
+              <!-- <div class="mb-1 ps-2 p-1 draggable border  draggable bg-white" draggable="true">{{ each }}</div> -->
               {% endif %}
               {% endfor %}
             </div>
@@ -135,7 +158,6 @@
         </div>
 
         <!-- untuk editingnya -->
-
         <div class="col-4">
           <div class="col-4 shadow-sm bg-white my-3 pb-3 position-fixed">
 
@@ -166,6 +188,30 @@
           </div>
         </div>
         <!-- untuk editingnya -->
+
+
+      </div>
+
+      <!-- untuk menampilkan teks beritanya -->
+      <div class="row justify-content-center mt-3 bg-light py-3 fixed-bottom shadow-lg">
+
+        <button class=" col-3 btn btn-sm btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas"
+          aria-controls="offcanvasBottom">Konten berita</button>
+
+        <div class="offcanvas offcanvas-bottom h-75" tabindex="-1" id="offcanvas"
+          aria-labelledby="offcanvasBottomLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasBottomLabel">Konten Berita</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+
+          <div class="offcanvas-body bg-light offcanvas-lg lh-lg">
+            {{ konten }}
+          </div>
+
+
+        </div>
+
 
 
       </div>

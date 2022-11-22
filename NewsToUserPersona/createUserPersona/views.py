@@ -29,8 +29,6 @@ def letsGo(request):
     sentences_with_entities = findingSentencesWithEntities(konten)
     potential_entities = profilingEntities(sentences_with_entities)
 
-    
-
     created_persona_dict = json.loads(created_persona)
     potential_entities_dict = json.loads(potential_entities)
 
@@ -40,10 +38,12 @@ def letsGo(request):
     print(combined_user_persona)
     combined_user_persona = MergeAndSort(combined_user_persona)
     print(combined_user_persona)
+    individualItems = itemsFound(combined_user_persona)
+    print('INDIVIDUAL ITEMS', individualItems)
     
 
 
-    send_to_render = {'user_persona': combined_user_persona}
+    send_to_render = {'user_persona': combined_user_persona, 'individual_item': individualItems, 'konten': konten}
 
 
     
@@ -350,3 +350,33 @@ def MergeAndSort(baca_json):
 
 
     return Sorted_Filtered_Persona
+
+def itemsFound(listPersonaHasilMerge):
+    foundNames = []
+    foundJob = []
+    foundWork = []
+    foundGoals = []
+    for each in listPersonaHasilMerge:
+        if each['name'] != 'User':
+            foundNames.append(each['name'])
+        if each['job_title'] != 'N/A' and each['job_title'] != []:
+            foundJob.append(str(each['job_title']))
+        if each['work'] != 'N/A' and each['work'] != []:
+            foundWork.append(str(each['work']))
+        for goal in each['goals']:
+            foundGoals.append(goal)
+    print(foundJob)
+
+    foundJob = np.unique(foundJob).tolist()
+    foundWork = np.unique(foundWork).tolist()
+
+    jumlah_nama = len(foundNames)
+    jumlah_job = len(foundJob)
+    jumlah_work = len(foundWork)
+    jumlah_goals = len(foundGoals)
+
+
+    dictionary_item = {'names': foundNames, 'jobs': foundJob, 'works': foundWork, 'goals': foundGoals, 'jumlah_nama': jumlah_nama, 'jumlah_job': jumlah_job, 'jumlah_work': jumlah_work, 'jumlah_goals': jumlah_goals}
+
+    return dictionary_item
+
