@@ -100,7 +100,7 @@ def createUserPersona(group_of_sentences):
             print()
 
             # mencari job title
-            job_matcher = PhraseMatcher(nlp.vocab)
+            job_matcher = PhraseMatcher(nlp.vocab, attr="LOWER")
             jabatan = job_titles
 
             patterns_job = [nlp.make_doc(text) for text in jabatan]
@@ -158,6 +158,24 @@ def preprocessingWithSpacy(input):
     # menggunakan lemmatized form
     # lemmatized_words = " ".join([token.lemma_ for token in doc])
     # doc = nlp(lemmatized_words)
+
+    # removing stop words
+    bersih = []
+
+    header = ["Text", "Lemmatization", "POS Tag", "Tag", "Dependency", "Shape", "Is Alpha", "Is Stop"]
+    table = [header]
+
+    print(table)
+
+    print("TEXT LEMMATIZATION POS-TAG TAG DEPNDNCY SHAPE IS_ALPHA IS_STOP")
+    for token in doc:
+        if token.is_stop == False:
+            # if token.pos_ != "PUNCT": 
+            # do not use punct so that it can distinguish the end of a sentence
+                bersih.append(token.text)
+
+    bersih = ' '.join(bersih)
+    doc = nlp(bersih)
 
     # mencari pattern goals
     matcher = Matcher(nlp.vocab)
@@ -260,7 +278,7 @@ def profilingEntities(sentences):
             print()
 
             # mencari job title
-            job_matcher = PhraseMatcher(nlp.vocab)
+            job_matcher = PhraseMatcher(nlp.vocab, attr='LOWER')
             jabatan = job_titles
 
             patterns_job = [nlp.make_doc(text) for text in jabatan]
