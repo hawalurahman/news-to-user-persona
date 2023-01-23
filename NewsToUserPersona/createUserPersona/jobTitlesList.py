@@ -1,8 +1,5 @@
 job_titles = [
-"founder",
-"business leader",
 "marketing specialist",
-"vice president",
 "marketing manager",
 "marketing director",
 "graphic designer",
@@ -440,7 +437,7 @@ job_titles = [
 "emergency relief worker",
 "red cross volunteer",
 "community food project worker",
-"women’s shelter jobs",
+"womens shelter jobs",
 "suicide hotline volunteer",
 "school volunteer",
 "community volunteer jobs",
@@ -473,7 +470,5 @@ job_titles = [
 "funeral attendant",
 "assistant golf professional",
 "yoga instructor",
-"business area manager",
-"area manager",
 
 ]

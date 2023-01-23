@@ -289,6 +289,7 @@ def profilingEntities(sentences):
             for match_id, start, end in job_titles_found:
                 nama_jabatan = go[start:end]
                 print(go[start:end])
+                break
 
             baru = UserPersona(nama, kerja, str(nama_jabatan), [])
             list_of_user_persona.append(baru.__dict__)
